@@ -1,5 +1,5 @@
 {
-  "name": "vanilla-react-app",
+  "name": "react-hooks-calculator",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
