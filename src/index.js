@@ -1,129 +1,83 @@
 import React, { useState } from 'react'
-import { render } from 'react-dom'
+import ReactDOM from 'react-dom'
 
-import Entry from './components/Entry'
-import Button from './components/Button'
-import FlexContainer from './components/FlexContainer'
+import './styles.css'
 
-
-const App = () => {
-	const [ currentNumber, setCurrentNumber ] = useState('---')
-	const [ previousNumber, setPreviousNumber ] = useState(0)
-	const [ currentOperator, setCurrentOperator ] = useState('')
-
-	const setNumberFromClickEvent = (e) => {
-		const numberToAppendFrom = isNaN(currentNumber) ? '' : currentNumber
-		setCurrentNumber(numberToAppendFrom + e.target.textContent)
-	}
-
-	const setOperatorFromClickEvent = (e) => {
-		if (currentOperator) {
-			performOperation(currentOperator)
-		} else {
-			setPreviousNumber(parseInt(currentNumber))
-			setCurrentNumber('---')
-		}
-
-		const operator = e.target.textContent
-		setCurrentOperator(operator)
-	}
-
-	const performOperation = (operator) => {
-		switch (operator) {
-			case '+':
-				setPreviousNumber(previousNumber + parseInt(currentNumber))
-				setCurrentNumber('---')
-				break
-			case '-':
-				setPreviousNumber(previousNumber - parseInt(currentNumber))
-				setCurrentNumber('---')
-				break
-			case '*':
-				setPreviousNumber(previousNumber * parseInt(currentNumber))
-				setCurrentNumber('---')
-				break
-			case '/':
-				setPreviousNumber(previousNumber / parseInt(currentNumber))
-				setCurrentNumber('---')
-				break
-			default:
-				break
-		}
-	}
-
-	//TODO: fix
-	const finalizeOperations = () => {
-		performOperation(currentOperator)
-		performOperation(currentOperator)
-		setCurrentNumber(previousNumber)
-	}
+function App() {
+	const [ input, setInput ] = useState('')
+	const calcBtns = []
+	;[ 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, '.', '%' ].forEach((item) => {
+		calcBtns.push(
+			<button
+				onClick={(e) => {
+					setInput(input + e.target.value)
+				}}
+				value={item}
+				key={item}
+			>
+				{' '}
+				{item}
+			</button>
+		)
+	})
 
 	return (
-		<div
-			style={{
-				width: '50%',
-				margin: '0 auto',
-				fontFamily: "'Orbitron', sans-serif",
-				fontSize: '22px',
-				marginTop: '100px',
-				maxWidth: '275px',
-				userSelect: 'none'
-			}}
-		>
-			<Entry>{currentNumber}</Entry>
-			<FlexContainer>
-				<Button onClick={() => setCurrentNumber('---')}>clear</Button>
-				<Button operator onClick={setOperatorFromClickEvent}>
-					÷
-				</Button>
-				<Button operator onClick={setOperatorFromClickEvent}>
-					x
-				</Button>
-			</FlexContainer>
-			<FlexContainer>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					7
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					8
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					9
-				</Button>
-				<Button style={{ width: '25%' }} operator onClick={setOperatorFromClickEvent}>
-					-
-				</Button>
-			</FlexContainer>
-			<FlexContainer>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					4
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					5
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					6
-				</Button>
-				<Button style={{ width: '25%' }} operator onClick={setOperatorFromClickEvent}>
+		<div className="wrapper">
+			{' '}
+			<div className="show-input">{input}</div>
+			<div className="digits flex">{calcBtns}</div>
+			<div className="modifiers subgrid">
+				{/* clear button */}
+
+				<button onClick={() => setInput(input.substr(0, input.length - 1))}>Clear</button>
+
+				{/* clear all */}
+				<button onClick={() => setInput('')} value="">
+					AC
+				</button>
+			</div>
+			<div className="operations subgrid">
+				{/* add button */}
+				<button onClick={(e) => setInput(input + e.target.value)} value="+">
 					+
-				</Button>
-			</FlexContainer>
-			<FlexContainer>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					1
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					2
-				</Button>
-				<Button style={{ width: '25%' }} onClick={setNumberFromClickEvent}>
-					3
-				</Button>
-				<Button style={{ width: '25%' }} operator onClick={finalizeOperations}>
+				</button>
+
+				{/* minus btn */}
+				<button onClick={(e) => setInput(input + e.target.value)} value="-">
+					{' '}
+					-{' '}
+				</button>
+
+				<button onClick={(e) => setInput(input + e.target.value)} value="*">
+					{' '}
+					*
+				</button>
+
+				<button onClick={(e) => setInput(input + e.target.value)} value="/">
+					{' '}
+					/
+				</button>
+				{/* "=" btn */}
+				<button
+					onClick={(e) => {
+						try {
+							setInput(
+								String(eval(input)).length > 3 && String(eval(input)).includes('.')
+									? String(eval(input).toFixed(4))
+									: String(eval(input))
+							)
+						} catch (e) {
+							console.log(e)
+						}
+					}}
+					value="="
+				>
 					=
-				</Button>
-			</FlexContainer>
+				</button>
+			</div>
 		</div>
 	)
 }
 
-render(<App />, document.getElementById('root'))
+const rootElement = document.getElementById('root')
+ReactDOM.render(<App />, rootElement)
