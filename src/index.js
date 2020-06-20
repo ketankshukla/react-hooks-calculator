@@ -25,7 +25,7 @@ function App() {
 	return (
 
 		<div className="wrapper">
-        <h3>This is a calculator app!</h3>
+       
 			{' '}
 			<div className="show-input">{input}</div>
 			<div className="digits flex">{calcBtns}</div>
