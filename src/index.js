@@ -22,7 +22,9 @@ function App() {
 	})
 
 	return (
+
 		<div className="wrapper">
+        <div>Calculator!</div>
 			{' '}
 			<div className="show-input">{input}</div>
 			<div className="digits flex">{calcBtns}</div>
